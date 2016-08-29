@@ -39,13 +39,10 @@ var Collector = function(config) {
     var prefixStats = config.prefixStats;
     prefixStats = prefixStats !== undefined ? prefixStats : "statsd";
     //setup the names for the stats stored in counters{}
-    this.packets_received = prefixStats + ".packets_received";
     this.metrics_received = prefixStats + ".metrics_received";
     this.timestamp_lag_namespace = prefixStats + ".timestamp_lag";
 
     //now set to zero so we can increment them
-    this.counters[this.bad_lines_seen]   = 0;
-    this.counters[this.packets_received] = 0;
     this.counters[this.metrics_received] = 0;
 
     this.flushInterval = Number(config.flushInterval || 10000);
@@ -102,16 +99,24 @@ var Collector = function(config) {
         "tags": ""
     }
 */
-Collector.prototype.handleMessage = function (msg, rinfo /* rinfo??? */) {
+Collector.prototype.handleMessage = function (msg) {
     var self = this;
-    self.counters[self.packets_received]++;
     self.counters[self.metrics_received]++;
+
+    msg.sampleRate = msg.sampleRate || 1;
 
     if (self.config.dumpMessages) {
         console.log(JSON.stringify(msg));
     }
 
-    var key = sanitizeKeyName(msg.stat);
+    var key;
+    if (self.keyNameSanitize) {
+        key = msg.stat.replace(/\s+/g, '_')
+                      .replace(/\//g, '-')
+                      .replace(/[^a-zA-Z_\-0-9\.]/g, '');
+    } else {
+        key = msg.stat;
+    }
 
     if (self.keyFlushInterval > 0) {
         if (! self.keyCounter[key]) {
@@ -146,7 +151,7 @@ Collector.prototype.handleMessage = function (msg, rinfo /* rinfo??? */) {
         self.counters[key] += Number(msg.value || 1) * (1 / msg.sampleRate);
     }
 
-    stats.messages.last_msg_seen = Math.round(new Date().getTime() / 1000);
+    self.stats.messages.last_msg_seen = Math.round(new Date().getTime() / 1000);
 };
 
 // Load and init the backend from the backends/ directory.
@@ -167,25 +172,12 @@ Collector.prototype.loadBackend = function(config, name) {
 
 Collector.prototype.getFlushTimeout = function(interval) {
     var self = this;
-    console.log('interval:' + interval +', flushInterval:' + self.flushInterval + ', startup_time:' + self.startup_time);
     return interval - (new Date().getTime() - self.startup_time * 1000) % self.flushInterval;
 };
 
 
-function sanitizeKeyName(key) {
-    if (keyNameSanitize) {
-        return key.replace(/\s+/g, '_')
-                    .replace(/\//g, '-')
-                    .replace(/[^a-zA-Z_\-0-9\.]/g, '');
-    } else {
-        return key;
-    }
-}
-
-
 // Flush metrics to each backend.
 Collector.prototype.flushMetrics = function() {
-    console.log('----- enter flushMetrics');
     var self = this;
     var time_stamp = Math.round(new Date().getTime() / 1000);
     if (self.old_timestamp > 0) {
@@ -222,9 +214,7 @@ Collector.prototype.flushMetrics = function() {
         self.config.deleteCounters = self.config.deleteCounters || false;
         for (var counter_key in metrics.counters) {
             if (self.config.deleteCounters) {
-                if ((counter_key.indexOf("packets_received") != -1) ||
-                    (counter_key.indexOf("metrics_received") != -1) ||
-                    (counter_key.indexOf("bad_lines_seen") != -1)) {
+                if (counter_key.indexOf("metrics_received") != -1) {
                     metrics.counters[counter_key] = 0;
                 } else {
                     delete(metrics.counters[counter_key]);
