@@ -1,7 +1,7 @@
 embedded-statsd
 ===============
 
-Here we have [statsd](https://github.com/etsy/statsd) and [node-statsd](https://github.com/sivy/node-statsd) are combined together.
+Here we have [statsd](https://github.com/etsy/statsd) and [node-statsd](https://github.com/sivy/node-statsd) combined together.
 
 What's the benefit?
 -------------------
@@ -9,7 +9,7 @@ What's the benefit?
 Why anyone would ever do that?
 * You don't need any separate statsd server running somewhere.
 * You don't need to send whole a lot of UDP packets to statsd server.
-* Stats are aggregated within so the network traffic would be greately reduced even further.
+* Stats are aggregated within so the network traffic to the external backends would be greately reduced even further.
 
 
 Install
