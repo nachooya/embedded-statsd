@@ -1,6 +1,4 @@
-var dgram = require('dgram'),
-    dns   = require('dns'),
-    Collector = require('./collector');
+var Collector = require('./collector');
 
 /**
  * The UDP Client for StatsD
