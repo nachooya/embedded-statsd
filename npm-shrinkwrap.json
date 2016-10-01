@@ -1,0 +1,11 @@
+{
+  "name": "embedded-statsd",
+  "version": "0.1.0",
+  "dependencies": {
+    "generic-pool": {
+      "version": "2.4.2",
+      "from": "generic-pool@latest",
+      "resolved": "https://registry.npmjs.org/generic-pool/-/generic-pool-2.4.2.tgz"
+    }
+  }
+}
