@@ -1,6 +1,6 @@
 {
   "name": "embedded-statsd",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "statsd and node-statsd combined together.",
   "main": "client.js",
   "scripts": {
