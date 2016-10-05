@@ -7,24 +7,17 @@ var Collector = require('./collector');
  *   @option suffix      {String}  An optional suffix to assign to each stat name sent
  *   @option mock        {boolean} An optional boolean indicating this Client is a mock object, no stats are sent.
  *   @option global_tags {Array=} Optional tags that will be added to every metric
+ * @param statsd_config {object}
  * @constructor
  */
-var Client = function (prefix, suffix, mock, global_tags, statsd_config) {
-  var options = {},
-         self = this;
+var Client = function (options, statsd_config) {
+  var self = this;
 
-  if(arguments.length > 1 || typeof(host) === 'string'){
-    options = {
-      prefix      : prefix,
-      suffix      : suffix,
-      mock        : mock === true,
-      global_tags : global_tags
-    };
-  }
+  options = options || {};
 
   this.prefix      = options.prefix || '';
   this.suffix      = options.suffix || '';
-  this.mock        = options.mock;
+  this.mock        = options.mock === true;
   this.global_tags = options.global_tags || [];
 
   this.collector   = new Collector(statsd_config);

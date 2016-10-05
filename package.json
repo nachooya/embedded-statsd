@@ -3,10 +3,22 @@
   "version": "0.1.0",
   "description": "statsd and node-statsd combined together.",
   "main": "client.js",
-  "scripts": {},
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
   "author": "Cheolgoo Kang",
   "license": "MIT",
   "dependencies": {
     "generic-pool": "^2.4.2"
+  },
+  "devDependencies": {
+    "mocha": "^3.1.0",
+    "nock": "^8.0.0",
+    "should": "^11.1.0",
+    "sinon": "^1.17.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appler1009/embedded-statsd.git"
   }
 }

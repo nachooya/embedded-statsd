@@ -5,6 +5,7 @@ const events = require('events'),
     logger = require('./lib/logger');
 
 var Collector = function(config) {
+    config = config || {};
     this.config = config;
     this.logger = new logger.Logger(config.log || {});
 
@@ -130,8 +131,8 @@ Collector.prototype.handleMessage = function (msg) {
             self.timers[key] = [];
             self.timer_counters[key] = 0;
         }
-        timers[key].push(Number(msg.value || 0));
-        timer_counters[key] += (1 / msg.sampleRate);
+        self.timers[key].push(Number(msg.value || 0));
+        self.timer_counters[key] += (1 / msg.sampleRate);
 
     } else if (msg.type === "g") {
         if (self.gauges[key] && msg.value.match(/^[-+]/)) {
