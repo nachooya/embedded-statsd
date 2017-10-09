@@ -62,9 +62,7 @@ var post_stats = function graphite_post_stats(stats) {
       var port = graphiteProtocol == 'pickle' ? graphitePicklePort : graphitePort;
       var graphite = net.createConnection(port, graphiteHost);
       graphite.addListener('error', function(connectionException){
-        if (debug) {
-          l.log(connectionException);
-        }
+        l.log('[graphite]: conneciont exception: '+connectionException);
       });
       graphite.on('connect', function() {
         var ts = Math.round(Date.now() / 1000);
@@ -84,9 +82,7 @@ var post_stats = function graphite_post_stats(stats) {
         graphiteStats.last_flush = Math.round(Date.now() / 1000);
       });
     } catch(e){
-      if (debug) {
-        l.log(e);
-      }
+      l.log('[graphite]: exception: '+e);
       graphiteStats.last_exception = Math.round(Date.now() / 1000);
     }
   }
