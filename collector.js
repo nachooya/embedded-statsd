@@ -3,6 +3,7 @@
 const events = require('events'),
     set = require('./lib/set'),
     logger = require('./lib/logger');
+    pm = require('./lib/process_metrics');
 
 var Collector = function(config) {
     config = config || {};
@@ -256,7 +257,9 @@ Collector.prototype.flushMetrics = function() {
         }
     });
 
-    self.backendEvents.emit('flush', time_stamp, metrics_hash);
+    pm.process_metrics(metrics_hash, flushInterval, time_stamp, function emitFlush(metrics) {
+        backendEvents.emit('flush', time_stamp, metrics);
+    });
 
     // Performing this setTimeout at the end of this method rather than the beginning
     // helps ensure we adapt to negative clock skew by letting the method's latency
