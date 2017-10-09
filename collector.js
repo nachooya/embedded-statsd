@@ -2,7 +2,7 @@
 
 const events = require('events'),
     set = require('./lib/set'),
-    logger = require('./lib/logger');
+    logger = require('./lib/logger'),
     pm = require('./lib/process_metrics');
 
 var Collector = function(config) {
