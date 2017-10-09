@@ -136,7 +136,7 @@ Collector.prototype.handleMessage = function (msg) {
         self.timer_counters[key] += (1 / msg.sampleRate);
 
     } else if (msg.type === "g") {
-        if (self.gauges[key] && msg.value.match(/^[-+]/)) {
+        if (self.gauges[key]) {
             self.gauges[key] += Number(msg.value || 0);
         } else {
             self.gauges[key] = Number(msg.value || 0);
